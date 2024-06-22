@@ -2,9 +2,10 @@ class Command
   VALID_COMMANDS = %w[MOVE LEFT RIGHT REPORT]
   VALID_PLACE_COMMAND_REGEX = /PLACE\s+(\d+)\s*,\s*(\d+)\s*,\s*(NORTH|EAST|SOUTH|WEST)/
 
-  def initialize(command, simulation)
+  def initialize(command, robot_board_movement, report_proc)
     @command = command.chomp.strip
-    @simulation = simulation
+    @robot_board_movement = robot_board_movement
+    @report_proc = report_proc
   end
 
   def process
@@ -19,25 +20,25 @@ class Command
 
   private
 
-  attr_reader :command, :simulation
+  attr_reader :command, :robot_board_movement, :report_proc
 
   def left
-    simulation.turn_left
+    robot_board_movement.turn_left
   end
 
   def move
-    simulation.move_forward
+    robot_board_movement.move_forward
   end
 
   def place(x, y, face)
-    simulation.set_position(x, y, face)
+    robot_board_movement.set_position(x, y, face)
   end
 
   def report
-    simulation.report_position
+    report_proc.call(robot_board_movement.get_position)
   end
 
   def right
-    simulation.turn_right
+    robot_board_movement.turn_right
   end
 end

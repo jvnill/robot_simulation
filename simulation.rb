@@ -1,65 +1,32 @@
+require './board'
+require './command'
+require './robot_board_movement'
+
 class Simulation
-  DIRECTIONS = %w[NORTH EAST SOUTH WEST]
-  X_DIRECTIONS = %w[EAST WEST]
+  BOARD_WIDTH = 5
+  BOARD_LENGTH = 5
 
-  attr_reader :position
-
-  def initialize(board)
-    @board = board
+  def initialize(input: STDIN, output: STDOUT)
+    @input = input
+    @output = output
   end
 
-  def move_forward
-    return unless position
+  def start
+    board = Board.new(BOARD_LENGTH, BOARD_WIDTH)
+    robot_board_movement = RobotBoardMovement.new(board)
 
-    case position[:face]
-    when 'NORTH'
-      validate_and_set_position(position.slice(:x, :face).merge(y: position[:y] + 1))
+    loop do
+      command = input.gets.chomp
 
-    when 'EAST'
-      validate_and_set_position(position.slice(:y, :face).merge(x: position[:x] + 1))
+      break if command == 'EXIT'
 
-    when 'SOUTH'
-      validate_and_set_position(position.slice(:x, :face).merge(y: position[:y] - 1))
-
-    when 'WEST'
-      validate_and_set_position(position.slice(:y, :face).merge(x: position[:x] - 1))
+      Command.new(command, robot_board_movement, proc { |position| output.puts(position) }).process
     end
-  end
-
-  def report_position
-    return unless position
-
-    puts "#{position[:x]},#{position[:y]},#{position[:face]}"
-  end
-
-  def set_position(x, y, face)
-    validate_and_set_position(x: x, y: y, face: face)
-  end
-
-  def turn_left
-    return unless position
-
-    position[:face] = DIRECTIONS[DIRECTIONS.index(position[:face]) - 1]
-  end
-
-  def turn_right
-    return unless position
-
-    position[:face] = DIRECTIONS[(DIRECTIONS.index(position[:face]) + 1) % 4]
   end
 
   private
 
-  attr_reader :robot, :board
-
-  def validate_and_set_position(position)
-    return if position[:x].nil? || position[:y].nil?
-
-    position[:x] = position[:x].to_i
-    position[:y] = position[:y].to_i
-
-    if board.position_valid?(position[:x], position[:y])
-      @position = position
-    end
-  end
+  attr_reader :input, :output
 end
+
+Simulation.new.start
