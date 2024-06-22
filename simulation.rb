@@ -28,5 +28,3 @@ class Simulation
 
   attr_reader :input, :output
 end
-
-Simulation.new.start

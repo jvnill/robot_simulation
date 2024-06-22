@@ -3,7 +3,7 @@ class Command
   VALID_PLACE_COMMAND_REGEX = /PLACE\s+(\d+)\s*,\s*(\d+)\s*,\s*(NORTH|EAST|SOUTH|WEST)/
 
   def initialize(command, robot_board_movement, report_proc)
-    @command = command.chomp.strip
+    @command = command.strip
     @robot_board_movement = robot_board_movement
     @report_proc = report_proc
   end
