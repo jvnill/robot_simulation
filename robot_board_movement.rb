@@ -11,41 +11,41 @@ class RobotBoardMovement
   def move_forward
     return unless position
 
-    case position[:face]
+    case position[:direction]
     when 'NORTH'
-      validate_and_set_position(position.slice(:x, :face).merge(y: position[:y] + 1))
+      validate_and_set_position(position.slice(:x, :direction).merge(y: position[:y] + 1))
 
     when 'EAST'
-      validate_and_set_position(position.slice(:y, :face).merge(x: position[:x] + 1))
+      validate_and_set_position(position.slice(:y, :direction).merge(x: position[:x] + 1))
 
     when 'SOUTH'
-      validate_and_set_position(position.slice(:x, :face).merge(y: position[:y] - 1))
+      validate_and_set_position(position.slice(:x, :direction).merge(y: position[:y] - 1))
 
     when 'WEST'
-      validate_and_set_position(position.slice(:y, :face).merge(x: position[:x] - 1))
+      validate_and_set_position(position.slice(:y, :direction).merge(x: position[:x] - 1))
     end
   end
 
   def get_position
     return unless position
 
-    "#{position[:x]},#{position[:y]},#{position[:face]}"
+    "#{position[:x]},#{position[:y]},#{position[:direction]}"
   end
 
-  def set_position(x, y, face)
-    validate_and_set_position(x: x, y: y, face: face)
+  def set_position(x, y, direction)
+    validate_and_set_position(x: x, y: y, direction: direction)
   end
 
   def turn_left
     return unless position
 
-    position[:face] = DIRECTIONS[DIRECTIONS.index(position[:face]) - 1]
+    position[:direction] = DIRECTIONS[DIRECTIONS.index(position[:direction]) - 1]
   end
 
   def turn_right
     return unless position
 
-    position[:face] = DIRECTIONS[(DIRECTIONS.index(position[:face]) + 1) % 4]
+    position[:direction] = DIRECTIONS[(DIRECTIONS.index(position[:direction]) + 1) % 4]
   end
 
   private

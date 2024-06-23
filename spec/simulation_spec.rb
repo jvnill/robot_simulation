@@ -2,7 +2,7 @@ require './simulation'
 require 'pry'
 
 RSpec.shared_examples 'turning a robot' do |turn_command, initial_direction, final_direction|
-  it "should turn the robot to face #{initial_direction} if initially facing #{final_direction}" do
+  it "should turn the robot to face #{final_direction} if initially facing #{initial_direction}" do
     expect(input).to receive(:gets).and_return("PLACE 0,0,#{initial_direction}\n", "#{turn_command}\n", "REPORT\n", "EXIT\n")
     expect(output).to receive(:puts).with(Simulation::WELCOME_NOTE)
     expect(output).to receive(:puts).with("0,0,#{final_direction}")

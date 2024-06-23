@@ -32,8 +32,8 @@ class Command
     robot_board_movement.move_forward
   end
 
-  def place(x, y, face)
-    robot_board_movement.set_position(x, y, face)
+  def place(x, y, direction)
+    robot_board_movement.set_position(x, y, direction)
   end
 
   def report
