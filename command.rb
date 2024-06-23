@@ -16,6 +16,8 @@ class Command
     if VALID_PLACE_COMMAND_REGEX =~ command
       return place($1, $2, $3)
     end
+
+    report_proc.call('Invalid Command')
   end
 
   private
