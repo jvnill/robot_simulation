@@ -1,6 +1,3 @@
-require './robot_board_movement'
-require 'pry'
-
 RSpec.shared_examples 'moving a robot forward in the middle of the board' do |direction, x_change, y_change|
   it "facing #{direction} should move 1 unit forward" do
     robot_board_movement.instance_variable_set('@position', { x: 2, y: 2, direction: direction })
@@ -28,9 +25,9 @@ RSpec.shared_examples 'turning a robot' do |turn_command, initial_direction, fin
   end
 end
 
-describe RobotBoardMovement do
+describe UnitRobot::RobotBoardMovement do
   let(:board) { double }
-  let(:robot_board_movement) { RobotBoardMovement.new(board) }
+  let(:robot_board_movement) { UnitRobot::RobotBoardMovement.new(board) }
 
   context 'move_forward' do
     include_examples 'moving a robot forward in the middle of the board', 'NORTH', 0, 1

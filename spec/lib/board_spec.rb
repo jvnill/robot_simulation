@@ -1,9 +1,7 @@
-require './board'
-
-describe Board do
+describe UnitRobot::Board do
   let(:length) { 5 }
   let(:width) { 5 }
-  let(:board) { Board.new(length, width) }
+  let(:board) { UnitRobot::Board.new(length, width) }
 
   [
     [0, 0, true],

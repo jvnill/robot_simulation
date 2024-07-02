@@ -1,10 +1,8 @@
-require './command'
-
-describe Command do
+describe UnitRobot::Command do
   let(:command_input) { nil }
   let(:robot_board_movement) { double }
   let(:report_proc) { double }
-  let(:command) { Command.new(command_input, robot_board_movement, report_proc) }
+  let(:command) { UnitRobot::Command.new(command_input, robot_board_movement, report_proc) }
 
   context 'process' do
     context 'valid move/turn/report command' do

@@ -1,4 +1,5 @@
 require 'simplecov'
+require_relative '../lib/unit_robot'
 
 SimpleCov.start
 

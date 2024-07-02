@@ -1,10 +1,7 @@
-require './simulation'
-require 'pry'
-
 RSpec.shared_examples 'turning a robot' do |turn_command, initial_direction, final_direction|
   it "should turn the robot to face #{final_direction} if initially facing #{initial_direction}" do
     expect(input).to receive(:gets).and_return("PLACE 0,0,#{initial_direction}\n", "#{turn_command}\n", "REPORT\n", "EXIT\n")
-    expect(output).to receive(:puts).with(Simulation::WELCOME_NOTE)
+    expect(output).to receive(:puts).with(UnitRobot::Simulation::WELCOME_NOTE)
     expect(output).to receive(:puts).with("0,0,#{final_direction}")
 
     simulation.start
@@ -14,17 +11,17 @@ end
 RSpec.shared_examples 'moving a robot' do |initial_position, final_position|
   it "should advance the robot 1 unit facing #{initial_position.split(',').pop}" do
     expect(input).to receive(:gets).and_return("PLACE #{initial_position}\n", "MOVE\n", "REPORT\n", "EXIT\n")
-    expect(output).to receive(:puts).with(Simulation::WELCOME_NOTE)
+    expect(output).to receive(:puts).with(UnitRobot::Simulation::WELCOME_NOTE)
     expect(output).to receive(:puts).with(final_position)
 
     simulation.start
   end
 end
 
-describe Simulation do
+describe UnitRobot::Simulation do
   let(:input) { StringIO.new }
   let(:output) { StringIO.new }
-  let(:simulation) { Simulation.new(input: input, output: output) }
+  let(:simulation) { UnitRobot::Simulation.new(input: input, output: output) }
 
   context 'PLACE and REPORT command' do
     before do
@@ -32,7 +29,7 @@ describe Simulation do
     end
 
     it 'should place the robot and report the position' do
-      expect(output).to receive(:puts).with(Simulation::WELCOME_NOTE)
+      expect(output).to receive(:puts).with(UnitRobot::Simulation::WELCOME_NOTE)
       expect(output).to receive(:puts).with('0,0,NORTH')
 
       simulation.start
@@ -75,7 +72,7 @@ describe Simulation do
     end
 
     it 'should not do anything and output Invalid command' do
-      expect(output).to receive(:puts).with(Simulation::WELCOME_NOTE)
+      expect(output).to receive(:puts).with(UnitRobot::Simulation::WELCOME_NOTE)
       expect(output).to receive(:puts).with('Invalid Command')
       expect(output).to receive(:puts).with(nil)
 
