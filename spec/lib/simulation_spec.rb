@@ -74,7 +74,7 @@ describe UnitRobot::Simulation do
     it 'should not do anything and output Invalid command' do
       expect(output).to receive(:puts).with(UnitRobot::Simulation::WELCOME_NOTE)
       expect(output).to receive(:puts).with('Invalid Command')
-      expect(output).to receive(:puts).with(nil)
+      expect(output).to receive(:puts).with('Robot is not on the board')
 
       simulation.start
     end

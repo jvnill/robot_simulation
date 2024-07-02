@@ -25,8 +25,8 @@ module UnitRobot
     end
 
     def start
-      board = UnitRobot::Board.new(BOARD_LENGTH, BOARD_WIDTH)
-      robot_board_movement = UnitRobot::RobotBoardMovement.new(board)
+      board = Board.new(BOARD_LENGTH, BOARD_WIDTH)
+      robot = Robot.new
 
       output.puts WELCOME_NOTE
 
@@ -35,11 +35,28 @@ module UnitRobot
 
         break if command == 'EXIT'
 
-        UnitRobot::Command.new(command, robot_board_movement, proc { |position| output.puts position }).process
-      end
+        command_parser = CommandParser.new(command)
+        outputter = proc { |text| output.puts text }
 
-    rescue
-      output.puts "There was an error running that command.  Exiting the simulation."
+        case command_parser.command_type
+        when :movement
+          mover = Mover.new(robot.get_position.dup, board)
+          parsed_command = command_parser.parse
+          robot.set_position(mover.process_command(parsed_command[:command], parsed_command[:position]))
+
+        when :report
+          position = robot.get_position
+
+          if position
+            outputter.call("#{position[:x]},#{position[:y]},#{position[:direction]}")
+          else
+            outputter.call "Robot is not on the board"
+          end
+
+        else
+          outputter.call 'Invalid Command'
+        end
+      end
     end
 
     private

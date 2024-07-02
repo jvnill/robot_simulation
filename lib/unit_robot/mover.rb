@@ -1,17 +1,33 @@
 module UnitRobot
-  class RobotBoardMovement
+  class Mover
     DIRECTIONS = %w[NORTH EAST SOUTH WEST]
     X_DIRECTIONS = %w[EAST WEST]
 
-    attr_reader :position
-
-    def initialize(board)
+    def initialize(initial_position, board)
+      @position = initial_position.dup
       @board = board
     end
 
-    def move_forward
-      return unless position
+    def process_command(command, new_position = nil)
+      if position && command != 'PLACE'
+        case command
+        when 'LEFT'  then turn_left
+        when 'RIGHT' then turn_right
+        when 'MOVE'  then move_forward
+        end
 
+      elsif command == 'PLACE'
+        set_position(new_position[:x], new_position[:y], new_position[:direction])
+      end
+
+      position
+    end
+
+    private
+
+    attr_reader :board, :position
+
+    def move_forward
       case position[:direction]
       when 'NORTH'
         validate_and_set_position(position.slice(:x, :direction).merge(y: position[:y] + 1))
@@ -27,31 +43,17 @@ module UnitRobot
       end
     end
 
-    def get_position
-      return unless position
-
-      "#{position[:x]},#{position[:y]},#{position[:direction]}"
-    end
-
     def set_position(x, y, direction)
       validate_and_set_position(x: x, y: y, direction: direction)
     end
 
     def turn_left
-      return unless position
-
       position[:direction] = DIRECTIONS[DIRECTIONS.index(position[:direction]) - 1]
     end
 
     def turn_right
-      return unless position
-
       position[:direction] = DIRECTIONS[(DIRECTIONS.index(position[:direction]) + 1) % 4]
     end
-
-    private
-
-    attr_reader :robot, :board
 
     def validate_and_set_position(position)
       return if position[:x].nil? || position[:y].nil?
