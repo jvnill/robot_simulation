@@ -26,35 +26,37 @@ module UnitRobot
 
     def start
       board = Board.new(BOARD_LENGTH, BOARD_WIDTH)
-      robot = Robot.new
+      position = BoardPosition.new
 
       output.puts WELCOME_NOTE
 
       loop do
-        command = input.gets.chomp
+        input_string = input.gets.chomp
 
-        break if command == 'EXIT'
+        begin
+          command = command_class(input_string).new(input_string, position.get.dup)
 
-        command_parser = CommandParser.new(command)
-        outputter = proc { |text| output.puts text }
+          command.process
 
-        case command_parser.command_type
-        when :movement
-          mover = Mover.new(robot.get_position.dup, board)
-          parsed_command = command_parser.parse
-          robot.set_position(mover.process_command(parsed_command[:command], parsed_command[:position]))
-
-        when :report
-          position = robot.get_position
-
-          if position
-            outputter.call("#{position[:x]},#{position[:y]},#{position[:direction]}")
-          else
-            outputter.call "Robot is not on the board"
+          if command.outputs_text? && command.output_text
+            output.puts(command.output_text)
           end
 
-        else
-          outputter.call 'Invalid Command'
+          if command.moves_position?
+            final_position = command.final_position
+
+            if final_position && board.position_valid?(final_position[:x], final_position[:y])
+              position.set(final_position)
+            end
+          end
+
+          if command.exits_program?
+            break
+          end
+
+        rescue
+          output.puts "Unknown error. Exiting program."
+          break
         end
       end
     end
@@ -62,5 +64,21 @@ module UnitRobot
     private
 
     attr_reader :input, :output
+
+    # Command classes are based on the command string, eg
+    #
+    #   PLACE is UnitRobot::Command::Place
+    #   MOVE is UnitRobot::Command::Move
+    #
+    # To add a command, just add the class under lib/unit_robot/command directory
+    # and inherit Base class
+    def command_class(input_string)
+      identifier = input_string.split(' ').shift.downcase
+
+      Object.const_get("UnitRobot::Command::#{identifier[0].upcase}#{identifier[1..-1]}Command")
+
+    rescue NameError
+      UnitRobot::Command::ErrorCommand
+    end
   end
 end
